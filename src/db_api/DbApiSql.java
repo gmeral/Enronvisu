@@ -9,17 +9,33 @@ import java.util.logging.Logger;
 
 public class DbApiSql {
 
-        private final static Logger LOGGER = Logger.getLogger(DbApiSql.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(DbApiSql.class.getName());
 
-        public static Driver driv;
-        public static Connection con = null;
+	public static Driver driv;
+	public static Connection con = null;
 
-        public DbApiSql() {
-                DbConnexion dbCon = DbConnexion.getBddConnection();
-                con = dbCon.getCon();
-        }
+	public DbApiSql() {
+		DbConnexion dbCon = DbConnexion.getBddConnection();
+		con = dbCon.getCon();
+	}
 
-        public void setNewIssue(String issue_key, String status) {
+	public StringBuffer getAllNames(){
+		java.sql.Statement stmt;
+		java.sql.ResultSet rs;
+		StringBuffer line = new StringBuffer("");
+		
+		try {
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM employeeList;");
+			while (rs.next()) {
+				line.append(rs.getString("*"));
+			}
+		} catch (SQLException e) {        
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+		}
+		return line;
+	}
+	/*   public void setNewIssue(String issue_key, String status) {
                 java.sql.PreparedStatement preparedStatement;
                 try {
                         preparedStatement = con.prepareStatement("INSERT INTO issues ("
@@ -101,5 +117,5 @@ public class DbApiSql {
                 if (s.compareTo("") != 0)
                         return true;
                 return false;
-        }
+        }*/
 }
