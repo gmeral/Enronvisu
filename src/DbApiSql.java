@@ -51,14 +51,16 @@ public class DbApiSql {
 		try{
 			System.out.println("computing messages receivers...");
 			Set<Entry<String, String>> set = senderMap.entrySet();
+			int cpt = 0;
 			for(Entry<String, String> ent : set) {
 				stmt2 = con.createStatement();
 				rs2 = stmt2.executeQuery("SELECT * FROM recipientinfo WHERE mid =" + ent.getKey() + ";");
+				
 				while(rs2.next()) {
 					String receiver = rs2.getString("rvalue");
 					
-					String key = new String(ent.getValue() + " " + receiver);
-					String reverseKey = new String(receiver + " " + ent.getValue());
+					String key = new String(ent.getValue() + "' '" + receiver);
+					String reverseKey = new String(receiver + "' '" + ent.getValue());
 					if (edgeValue.containsKey(key)) 
 						edgeValue.put(key, edgeValue.get(key) + 1);
 					else if (edgeValue.containsKey(reverseKey)) 
@@ -66,7 +68,11 @@ public class DbApiSql {
 					else
 						edgeValue.put(key, 1);
 					System.out.println("value updated :" + ent.getValue() + " " + receiver);
+					
 				}
+				cpt++;
+				if (cpt == 101)
+					break;
 			}
 		}catch (SQLException e) {        
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
