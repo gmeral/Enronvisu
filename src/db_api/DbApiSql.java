@@ -26,9 +26,10 @@ public class DbApiSql {
 		
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM employeeList;");
+			rs = stmt.executeQuery("SELECT * FROM employeelist;");
 			while (rs.next()) {
-				line.append(rs.getString("*"));
+				System.out.println(rs.getString("eid"));
+				line.append(rs.getString("eid"));
 			}
 		} catch (SQLException e) {        
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
