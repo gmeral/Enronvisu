@@ -3,8 +3,12 @@
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,35 +26,51 @@ public class DbApiSql {
 
 	public Map<String, Integer> getAllNames(){
 		java.sql.Statement stmt;
+		java.sql.Statement stmt2;
 		java.sql.ResultSet rs;
 		java.sql.ResultSet rs2;
 		StringBuffer line = new StringBuffer("");
+		Map<String, String> senderMap = new HashMap<String, String>();
 		Map<String, Integer> edgeValue =  new HashMap<String, Integer>();
+		System.out.println("Retrieving messages ...");
 
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM message;");
 
+			System.out.println("query");
+			rs = stmt.executeQuery("SELECT * FROM message;");
 			while (rs.next()) {
 				String sender = rs.getString("sender");
 				String messageId = rs.getString("mid");
-				rs2 = stmt.executeQuery("SELECT * FROM recipientinfo WHERE mid =" + messageId + ";");
+				senderMap.put(messageId, sender);
+			}
+		} catch (SQLException e) {        
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+		}
+		
+		try{
+			System.out.println("computing messages receivers...");
+			Set<Entry<String, String>> set = senderMap.entrySet();
+			for(Entry<String, String> ent : set) {
+				stmt2 = con.createStatement();
+				rs2 = stmt2.executeQuery("SELECT * FROM recipientinfo WHERE mid =" + ent.getKey() + ";");
 				while(rs2.next()) {
 					String receiver = rs2.getString("rvalue");
-					String key = new String(sender + " " + receiver);
-					String reverseKey = new String(receiver + " " + sender);
+					
+					String key = new String(ent.getValue() + " " + receiver);
+					String reverseKey = new String(receiver + " " + ent.getValue());
 					if (edgeValue.containsKey(key)) 
 						edgeValue.put(key, edgeValue.get(key) + 1);
 					else if (edgeValue.containsKey(reverseKey)) 
 						edgeValue.put(reverseKey, edgeValue.get(reverseKey) + 1);
 					else
 						edgeValue.put(key, 1);
+					System.out.println("value updated :" + ent.getValue() + " " + receiver);
 				}
-				line.append(messageId);
 			}
-		} catch (SQLException e) {        
+		}catch (SQLException e) {        
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-		}
+		} 
 		return edgeValue;
 	}
 	/*   public void setNewIssue(String issue_key, String status) {
