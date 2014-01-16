@@ -1,9 +1,10 @@
-package db_api;
+
 
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,22 +20,38 @@ public class DbApiSql {
 		con = dbCon.getCon();
 	}
 
-	public StringBuffer getAllNames(){
+	public Map<String, Integer> getAllNames(){
 		java.sql.Statement stmt;
 		java.sql.ResultSet rs;
+		java.sql.ResultSet rs2;
 		StringBuffer line = new StringBuffer("");
-		
+		Map<String, Integer> edgeValue =  new HashMap<String, Integer>();
+
 		try {
 			stmt = con.createStatement();
-			rs = stmt.executeQuery("SELECT * FROM employeelist;");
+			rs = stmt.executeQuery("SELECT * FROM message;");
+
 			while (rs.next()) {
-				System.out.println(rs.getString("eid"));
-				line.append(rs.getString("eid"));
+				String sender = rs.getString("sender");
+				String messageId = rs.getString("mid");
+				rs2 = stmt.executeQuery("SELECT * FROM recipientinfo WHERE mid =" + messageId + ";");
+				while(rs2.next()) {
+					String receiver = rs2.getString("rvalue");
+					String key = new String(sender + " " + receiver);
+					String reverseKey = new String(receiver + " " + sender);
+					if (edgeValue.containsKey(key)) 
+						edgeValue.put(key, edgeValue.get(key) + 1);
+					else if (edgeValue.containsKey(reverseKey)) 
+						edgeValue.put(reverseKey, edgeValue.get(reverseKey) + 1);
+					else
+						edgeValue.put(key, 1);
+				}
+				line.append(messageId);
 			}
 		} catch (SQLException e) {        
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
-		return line;
+		return edgeValue;
 	}
 	/*   public void setNewIssue(String issue_key, String status) {
                 java.sql.PreparedStatement preparedStatement;
