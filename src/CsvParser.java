@@ -80,11 +80,11 @@ public class CsvParser {
 			BufferedWriter bw = new BufferedWriter(opsw);
 
 			Set<Entry<String, Integer>> set = dataMap.entrySet();
-			bw.write("fromNodeId toNodeId weight");
+			bw.write("fromNodeId*toNodeId*weight");
 			bw.newLine();
 			int cpt = 0;
 			for(Entry<String,Integer> ent : set) {
-				bw.write("'" + ent.getKey() + "'" + " " + ent.getValue());
+				bw.write("'" + ent.getKey() + "'" + "*" + ent.getValue());
 				bw.newLine();
 				cpt++;
 				if((cpt % 100) == 0)

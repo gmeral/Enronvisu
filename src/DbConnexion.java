@@ -9,10 +9,10 @@ import java.util.logging.Logger;
 
 public final class DbConnexion {
 	
-		private static String USER = "gmeral";
-		private static String PSWRD = "FooFuR3$";
-		private static String DB = "gmeral";
-		private static String HOST = "dbserver";
+		private static String USER = "root";
+		private static String PSWRD = "harmony";
+		private static String DB = "enron";
+		private static String HOST = "localhost";
 		private static String PORT = "3306";
         private static String url = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DB;
 

@@ -1,5 +1,3 @@
-
-
 import java.util.Map;
 
 
@@ -8,6 +6,6 @@ public class Testdb {
 		
 		DbApiSql db = new DbApiSql();
 		Map<String, Integer> map = db.getAllNames();
-		CsvParser.exportMapEdgeValue(map, "/autofs/netapp/account/cremi/gmeral/git/Enronvisu/data/EsgeValues-Enron.csv");
+		CsvParser.exportMapEdgeValue(map, "/home/guiiii/git/BIV/Enronvisu/data/EsgeValues-Enron.csv");
 	}
 }

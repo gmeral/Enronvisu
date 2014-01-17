@@ -59,8 +59,8 @@ public class DbApiSql {
 				while(rs2.next()) {
 					String receiver = rs2.getString("rvalue");
 					
-					String key = new String(ent.getValue() + "' '" + receiver);
-					String reverseKey = new String(receiver + "' '" + ent.getValue());
+					String key = new String(ent.getValue() + "'*'" + receiver);
+					String reverseKey = new String(receiver + "'*'" + ent.getValue());
 					if (edgeValue.containsKey(key)) 
 						edgeValue.put(key, edgeValue.get(key) + 1);
 					else if (edgeValue.containsKey(reverseKey)) 
